@@ -151,7 +151,7 @@ export default function RefineForm() {
             <button
               type="submit"
               disabled={isLoading || draft.length === 0}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-md hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-md hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isLoading ? 'Оптимизация...' : 'Оптимизировать под платформу'}
             </button>
@@ -233,7 +233,7 @@ export default function RefineForm() {
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-2 px-4 rounded-md hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 transition-colors"
+              className="flex-1 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-medium py-2 px-4 rounded-md hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 transition-colors"
             >
               Сгенерировать другой вариант
             </button>
