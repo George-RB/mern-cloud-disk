@@ -7,6 +7,7 @@ export default function RefineForm() {
   const [platform, setPlatform] = useState('youtube');
   const [goal, setGoal] = useState('click');
   const [isLoading, setIsLoading] = useState(false);
+  const [provider, setProvider] = useState<'openai' | 'deepseek'>('deepseek'); // По умолчанию DeepSeek
   const [result, setResult] = useState<{
     title: string;
     description: string;
@@ -29,6 +30,7 @@ export default function RefineForm() {
           draft,
           platform,
           goal,
+          provider, // <-- Добавляем эту строку
         }),
       });
 
@@ -112,6 +114,37 @@ export default function RefineForm() {
                   <option value="seo">Усилить для SEO</option>
                   <option value="clear">Сделать чётким</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Поле выбора провайдера AI */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                AI Провайдер
+              </label>
+              <div className="flex items-center space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="provider"
+                    value="deepseek"
+                    checked={provider === 'deepseek'}
+                    onChange={(e) => setProvider('deepseek')}
+                    className="text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2">DeepSeek (рекомендуется)</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="provider"
+                    value="openai"
+                    checked={provider === 'openai'}
+                    onChange={(e) => setProvider('openai')}
+                    className="text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2">OpenAI (если доступен)</span>
+                </label>
               </div>
             </div>
 
