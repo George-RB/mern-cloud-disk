@@ -7,7 +7,11 @@ export default function RefineForm() {
   const [platform, setPlatform] = useState('youtube');
   const [goal, setGoal] = useState('click');
   const [isLoading, setIsLoading] = useState(false);
-  const [provider, setProvider] = useState<'openai' | 'deepseek'>('deepseek'); // По умолчанию DeepSeek
+
+  const [provider, setProvider] = useState<
+    'openai' | 'deepseek' | 'huggingface'
+  >('huggingface'); // По умолчанию huggingface
+
   const [result, setResult] = useState<{
     title: string;
     description: string;
@@ -144,6 +148,17 @@ export default function RefineForm() {
                     className="text-blue-600 focus:ring-blue-500"
                   />
                   <span className="ml-2">OpenAI (если доступен)</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="provider"
+                    value="huggingface"
+                    checked={provider === 'huggingface'}
+                    onChange={(e) => setProvider('huggingface')}
+                    className="text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2">Hugging Face</span>
                 </label>
               </div>
             </div>
