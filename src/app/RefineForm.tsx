@@ -9,8 +9,8 @@ export default function RefineForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [provider, setProvider] = useState<
-    'openai' | 'deepseek' | 'huggingface'
-  >('huggingface'); // По умолчанию huggingface
+    'openai' | 'deepseek' | 'huggingface' | 'mistral'
+  >('mistral');
 
   const [result, setResult] = useState<{
     title: string;
@@ -34,7 +34,7 @@ export default function RefineForm() {
           draft,
           platform,
           goal,
-          provider, // <-- Добавляем эту строку
+          requestedProvider: provider, // Ключевая строка! Переменная, а не строка 'mistral'
         }),
       });
 
@@ -127,6 +127,7 @@ export default function RefineForm() {
                 AI Провайдер
               </label>
               <div className="flex items-center space-x-4">
+                {/* Существующие кнопки */}
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
@@ -159,6 +160,18 @@ export default function RefineForm() {
                     className="text-blue-600 focus:ring-blue-500"
                   />
                   <span className="ml-2">Hugging Face</span>
+                </label>
+                {/* ДОБАВЛЯЕМ ЭТУ НОВУЮ КНОПКУ ДЛЯ MISTRAL */}
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    name="provider"
+                    value="mistral"
+                    checked={provider === 'mistral'}
+                    onChange={(e) => setProvider('mistral')}
+                    className="text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="ml-2">Mistral AI</span>
                 </label>
               </div>
             </div>

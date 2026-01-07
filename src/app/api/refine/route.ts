@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { HfInference } from '@huggingface/inference';
+import { Mistral } from '@mistralai/mistralai';
 
 // Инициализируем OpenAI клиент
 const openai = new OpenAI({
@@ -13,6 +14,8 @@ const deepseekai = new OpenAI({
 });
 
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+
+const mistralClient = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
 // Системный промпт из вашего ТЗ
 const SYSTEM_PROMPT = `Ты — AI-редактор. Твоя задача — переработать и улучшить черновик пользователя.
@@ -40,7 +43,7 @@ Pond5:
 - Теги: максимально конкретные, технические`;
 
 export async function POST(request: NextRequest) {
-  let provider: 'openai' | 'deepseek' | 'huggingface' = 'huggingface';
+  let provider: 'openai' | 'deepseek' | 'huggingface' | 'mistral' = 'mistral'; // Новый тип и значение по умолчанию
 
   try {
     const { draft, platform, goal, requestedProvider } = await request.json();
@@ -49,7 +52,8 @@ export async function POST(request: NextRequest) {
     if (
       requestedProvider === 'openai' ||
       requestedProvider === 'deepseek' ||
-      requestedProvider === 'huggingface'
+      requestedProvider === 'huggingface' ||
+      requestedProvider === 'mistral'
     ) {
       provider = requestedProvider;
     }
@@ -128,6 +132,76 @@ export async function POST(request: NextRequest) {
         console.error('Ошибка с Hugging Face chatCompletion API:', hfError);
         // Пробрасываем ошибку дальше для обработки в основном блоке catch
         throw hfError;
+      }
+    }
+    // 🔹 НОВАЯ ВЕТКА ДЛЯ MISTRAL AI
+    // 🔹 НОВАЯ ВЕТКА ДЛЯ MISTRAL AI
+    else if (provider === 'mistral') {
+      const modelName = 'mistral-small-latest';
+
+      const chatResponse = await mistralClient.chat.complete({
+        model: modelName,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: 0.7,
+        maxTokens: 500,
+      });
+
+      const responseContent = chatResponse.choices[0]?.message?.content;
+
+      if (!responseContent) {
+        throw new Error('Mistral AI не вернул содержимого ответа.');
+      }
+
+      // 🔹 Ключевое исправление: правильно обрабатываем разные типы ContentChunk
+      let responseText: string;
+
+      if (Array.isArray(responseContent)) {
+        // Если это массив ContentChunk, собираем текст только из текстовых фрагментов
+        responseText = responseContent
+          .filter((chunk) => chunk.type === 'text') // Фильтруем только текстовые фрагменты
+          .map((chunk) => {
+            // Приводим тип к TextChunk, чтобы получить доступ к свойству text
+            const textChunk = chunk as { type: 'text'; text: string };
+            return textChunk.text;
+          })
+          .join('');
+      } else {
+        // Если это уже строка, используем её
+        responseText = responseContent;
+      }
+
+      // Проверяем, удалось ли извлечь текст
+      if (responseText.trim().length === 0) {
+        throw new Error(
+          'Mistral AI вернул ответ, но в нём не было текстового содержимого.'
+        );
+      }
+
+      // Теперь responseText гарантированно строка, можно использовать .match()
+      try {
+        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          result = JSON.parse(jsonMatch[0]);
+        } else {
+          console.warn(
+            'JSON не найден в ответе. Использую весь текст как description.'
+          );
+          result = {
+            title: '',
+            description: responseText.trim(),
+            tags: '',
+          };
+        }
+      } catch (parseError) {
+        console.error('Ошибка парсинга ответа Mistral:', responseText);
+        result = {
+          title: '',
+          description: responseText.trim(),
+          tags: '',
+        };
       }
     } else {
       // ... остальной код для OpenAI/DeepSeek else {
