@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ContentRefinery 🛠️
 
-## Getting Started
+**AI-редактор, который перерабатывает ваши черновики под конкретные платформы.** Быстрое улучшение заголовков, описаний и тегов для YouTube, Pond5 и других платформ.
 
-First, run the development server:
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)]({{Добавьте_ссылку_на_деплой,_например,_Vercel}})
+[![GitHub License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+> **MVP Status:** Проект находится в стадии активной разработки MVP v1.1. Основная цель — проверить гипотезу: готовы ли авторы платить за быструю оптимизацию контента.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Возможности
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **🎯 Оптимизация под платформу:** Специальные промпты для YouTube (кликабельность, SEO) и Pond5 (чёткость, технические детали).
+- **🤖 Мульти-провайдер AI:** Выбор между несколькими AI-движками (DeepSeek, Mistral AI, Hugging Face, OpenAI\*).
+- **⚡ Мгновенный результат:** Улучшенный текст — за 10 секунд.
+- **🧩 Простой интерфейс:** Одна страница, три шага: ввод черновика, выбор параметров, копирование результата.
+- **🔒 Контроль расходов:** Система лимитов (2 бесплатных улучшения) и активация платёжных ключей.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Быстрый старт
 
-## Learn More
+### Предварительные требования
 
-To learn more about Next.js, take a look at the following resources:
+- [Node.js](https://nodejs.org/) (версия 18 или выше)
+- [npm](https://www.npmjs.com/) или [yarn](https://yarnpkg.com/)
+- API-ключи от одного или нескольких AI-провайдеров (рекомендуем начать с [DeepSeek](https://platform.deepseek.com/)).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Установка и запуск
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Клонируйте репозиторий**
 
-## Deploy on Vercel
+    ```bash
+    git clone {{https://github.com/ваш-username/ContentRefinery.git}}
+    cd ContentRefinery
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2.  **Установите зависимости**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```bash
+    npm install
+    # или
+    yarn install
+    ```
+
+3.  **Настройте переменные окружения**
+    Создайте файл `.env.local` в корне проекта на основе примера:
+
+    ```bash
+    cp .env.example .env.local
+    ```
+
+    Откройте `.env.local` и добавьте ваши API-ключи. _Обязательным для работы является хотя бы один ключ (например, DeepSeek)._
+
+    ```env
+    # Обязательный минимум для старта:
+    DEEPSEEK_API_KEY=your_deepseek_api_key_here
+    # Опционально (если есть доступ):
+    MISTRAL_API_KEY=your_mistral_api_key_here
+    OPENAI_API_KEY=your_openai_api_key_here
+    HUGGINGFACE_API_KEY=your_huggingface_api_key_here
+    ```
+
+4.  **Запустите сервер разработки**
+
+    ```bash
+    npm run dev
+    # или
+    yarn dev
+    ```
+
+5.  **Откройте приложение**
+    Перейдите по адресу [http://localhost:3000](http://localhost:3000) в браузере.
+
+**Готово!** Вы можете начать тестировать улучшение черновиков. Для первых двух запросов лимиты не применяются.
+
+## 🖼️ Скриншот
+
+{{*Сюда вы позже можете вставить ссылку на скриншот вашего интерфейса, например:*}}
+![ContentRefinery Interface](https://via.placeholder.com/800x450/3b82f6/ffffff?text=Скриншот+интерфейса+ContentRefinery)
+
+## 🧠 Как это работает
+
+1.  **Пользователь** вставляет свой черновик (заголовок, описание, теги) в текстовое поле.
+2.  **Приложение** отправляет этот текст, выбранные параметры (платформа, цель) и указанный AI-провайдер на серверный API-роут (`/api/refine`).
+3.  **Сервер** использует детальный системный промпт для выбранного AI, чтобы переработать текст, следуя правилам платформы.
+4.  **Результат** возвращается в виде чистого JSON, содержащего оптимизированные заголовок, описание и теги, которые пользователь может скопировать одним кликом.
+
+**Техническая архитектура:**
+
+- **Фронтенд:** Next.js 14 (App Router), React, TypeScript, Tailwind CSS.
+- **Бэкенд:** API Routes Next.js (Serverless функции).
+- **AI Интеграция:** Единый интерфейс для работы с разными провайдерами (OpenAI SDK, DeepSeek, Mistral AI, Hugging Face).
+
+## 🔧 Стек технологий
+
+- **Фреймворк:** [Next.js 14](https://nextjs.org/) (App Router)
+- **Язык:** [TypeScript](https://www.typescriptlang.org/)
+- **Стили:** [Tailwind CSS](https://tailwindcss.com/)
+- **AI Провайдеры:** DeepSeek API, Mistral AI API, Hugging Face Inference API, OpenAI API\*
+- **Хостинг:** [Vercel](https://vercel.com/) (рекомендуется)
+
+## 📋 План разработки (MVP Roadmap)
+
+- [x] **Фаза 1: Ядро AI-обработки**
+  - [x] Базовый UI (форма, выбор платформы/цели).
+  - [x] Интеграция нескольких AI-провайдеров (DeepSeek, Mistral, Hugging Face).
+- [ ] **Фаза 2: Монетизация и лимиты**
+  - [ ] Подключение базы данных (Upstash Redis) для учёта лимитов.
+  - [ ] Система "2 бесплатных улучшения" на пользователя (`guest_id`).
+  - [ ] API для активации платёжных ключей.
+  - [ ] Интерфейс для ввода ключа при исчерпании лимита.
+- [ ] **Фаза 3: Запуск и тестирование**
+  - [ ] Деплой на Vercel.
+  - [ ] Настройка продажи ключей через Gumroad/LemonSqueezy.
+  - [ ] Сбор первых платёжных транзакций и фидбека.
+
+## 🤝 Как внести свой вклад
+
+Вклады приветствуются! Если у вас есть идеи по улучшению, выполните следующие шаги:
+
+1.  Форкните репозиторий.
+2.  Создайте ветку для вашей функции (`git checkout -b feature/amazing-feature`).
+3.  Зафиксируйте изменения (`git commit -m 'Add some amazing feature'`).
+4.  Запушьте в ветку (`git push origin feature/amazing-feature`).
+5.  Откройте Pull Request.
+
+Пожалуйста, убедитесь, что ваш код соответствует стилю проекта и проходит проверки.
+
+## 📄 Лицензия
+
+Этот проект распространяется под лицензией MIT. Подробнее см. в файле [LICENSE](LICENSE).
+
+## 📞 Контакты
+
+{{*Укажите, как с вами можно связаться, например:*}}
+
+- **Автор:** Necrosea
+- **Проект:** [ContentRefinery на GitHub]({{https://github.com/ваш-username/ContentRefinery}})
+- **По вопросам:** {{your_email@example.com}}
+
+---
+
+_Создано с ❤️ для авторов контента._
