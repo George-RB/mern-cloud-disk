@@ -56,36 +56,80 @@ export async function getUserLimit(guestId: string): Promise<UserLimit> {
  * @param guestId Уникальный идентификатор пользователя
  * @returns Новый объект UserLimit или null, если лимит исчерпан
  */
+// export async function decrementLimit(
+//   guestId: string
+// ): Promise<UserLimit | null> {
+//   try {
+//     const key = getLimitKey(guestId);
+
+//     // Используем транзакцию для атомарного обновления
+//     const result = await redis
+//       .multi()
+//       .get(key) // Получаем текущее значение
+//       .exec();
+
+//     if (!result || !result[0]) {
+//       return null;
+//     }
+
+//     const currentLimit = result[0] as UserLimit;
+
+//     // Проверяем, остались ли попытки
+//     if (currentLimit.remaining <= 0) {
+//       return null; // Лимит исчерпан
+//     }
+
+//     // Создаём обновлённый лимит
+//     const updatedLimit: UserLimit = {
+//       remaining: currentLimit.remaining - 1,
+//       totalUsed: currentLimit.totalUsed + 1,
+//     };
+
+//     // Сохраняем обновлённый лимит
+//     await redis.set(key, updatedLimit);
+//     return updatedLimit;
+//   } catch (error) {
+//     console.error('Ошибка при уменьшении лимита:', error);
+//     return null;
+//   }
+// }
+
+/**
+ * Уменьшить лимит пользователя на 1.
+ * Сначала получает лимит, если его нет — создаёт новый (2 попытки).
+ * @param guestId Уникальный идентификатор пользователя
+ * @returns Новый объект UserLimit или null, если лимит исчерпан
+ */
 export async function decrementLimit(
   guestId: string
 ): Promise<UserLimit | null> {
   try {
     const key = getLimitKey(guestId);
 
-    // Используем транзакцию для атомарного обновления
-    const result = await redis
-      .multi()
-      .get(key) // Получаем текущее значение
-      .exec();
+    // 1. ПОЛУЧАЕМ ТЕКУЩИЙ ЛИМИТ ИЛИ СОЗДАЁМ НОВЫЙ
+    let currentLimit = await redis.get<UserLimit>(key);
 
-    if (!result || !result[0]) {
-      return null;
+    if (!currentLimit) {
+      // Если лимита нет, создаём новый с 2 попытками
+      currentLimit = {
+        remaining: 2,
+        totalUsed: 0,
+      };
+      await redis.set(key, currentLimit);
     }
 
-    const currentLimit = result[0] as UserLimit;
-
-    // Проверяем, остались ли попытки
+    // 2. ПРОВЕРЯЕМ, ОСТАЛИСЬ ЛИ ПОПЫТКИ
     if (currentLimit.remaining <= 0) {
       return null; // Лимит исчерпан
     }
 
-    // Создаём обновлённый лимит
+    // 3. СОЗДАЁМ ОБНОВЛЁННЫЙ ЛИМИТ (уменьшаем на 1)
     const updatedLimit: UserLimit = {
       remaining: currentLimit.remaining - 1,
       totalUsed: currentLimit.totalUsed + 1,
     };
 
-    // Сохраняем обновлённый лимит
+    // 4. СОХРАНЯЕМ ОБНОВЛЁННЫЙ ЛИМИТ
     await redis.set(key, updatedLimit);
     return updatedLimit;
   } catch (error) {
