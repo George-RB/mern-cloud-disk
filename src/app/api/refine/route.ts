@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
           error: 'Лимит исчерпан',
           limitRemaining: currentLimit.remaining,
         },
-        { status: 402 }
+        { status: 429 }
       );
     }
 

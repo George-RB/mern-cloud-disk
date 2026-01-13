@@ -2,11 +2,15 @@
   "name": "mern-cloud-disk",
   "version": "0.1.0",
   "private": true,
+
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "seed-keys": "tsx scripts/seed-test-keys.ts"
   },
+
   "dependencies": {
     "@huggingface/inference": "^4.13.5",
     "@mistralai/mistralai": "^1.11.0",

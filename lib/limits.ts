@@ -179,3 +179,5 @@ export async function increaseLimit(
     return { remaining: improvements, totalUsed: 0 };
   }
 }
+
+export { redis };
