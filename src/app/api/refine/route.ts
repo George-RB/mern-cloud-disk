@@ -19,7 +19,7 @@ const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
 const mistralClient = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
-// Системный промпт из вашего ТЗ
+// Системный промпт из ТЗ
 const SYSTEM_PROMPT = `Ты — AI-редактор. Твоя задача — переработать и улучшить черновик пользователя.
 
 ПРАВИЛА:
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     if (
       ['openai', 'deepseek', 'huggingface', 'mistral'].includes(
-        requestedProvider
+        requestedProvider,
       )
     ) {
       provider = requestedProvider;
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     if (!draft || draft.trim().length === 0) {
       return NextResponse.json(
         { error: 'Черновик не может быть пустым' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
           error: 'Лимит исчерпан',
           limitRemaining: currentLimit.remaining,
         },
-        { status: 429 }
+        { status: 429 },
       );
     }
 
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
 
     // 🔹 ВЕТКА ДЛЯ HUGGING FACE
     if (provider === 'huggingface') {
-      const modelName = 'gpt2'; //  модель, которая точно работает
+      const modelName = 'gpt2'; //  модель, которая точно работает?
 
       const messages = [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
         // 🔍 ЛОГИРОВАНИЕ: что получили
         console.log(
           'Full Hugging Face Response:',
-          JSON.stringify(hfResponse, null, 2)
+          JSON.stringify(hfResponse, null, 2),
         );
         console.log('Generated text:', hfResponse.generated_text);
 
@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
         // 2. Ищем в блоке кода ```json
         if (!foundJson) {
           const codeBlockMatch = generatedText.match(
-            /```json\n([\s\S]*?)\n```/
+            /```json\n([\s\S]*?)\n```/,
           );
           if (codeBlockMatch) {
             foundJson = codeBlockMatch[1];
@@ -195,12 +195,12 @@ export async function POST(request: NextRequest) {
           hfError.message?.includes('not supported')
         ) {
           throw new Error(
-            `Модель ${modelName} не поддерживается. Попробуйте 'microsoft/DialoGPT-medium'.`
+            `Модель ${modelName} не поддерживается. Попробуйте 'microsoft/DialoGPT-medium'.`,
           );
         }
         if (hfError.message?.includes('429')) {
           throw new Error(
-            'Превышен лимит запросов к Hugging Face. Попробуйте позже.'
+            'Превышен лимит запросов к Hugging Face. Попробуйте позже.',
           );
         }
         if (
@@ -208,17 +208,17 @@ export async function POST(request: NextRequest) {
           hfError.message?.includes('API key')
         ) {
           throw new Error(
-            'Проблема с API ключом Hugging Face. Проверьте .env.local.'
+            'Проблема с API ключом Hugging Face. Проверьте .env.local.',
           );
         }
 
         throw new Error(
-          `Hugging Face error: ${hfError.message || 'Unknown error'}`
+          `Hugging Face error: ${hfError.message || 'Unknown error'}`,
         );
       }
       console.log('=====================');
     }
-    // 🔹 ВЕТКА ДЛЯ MISTRAL AI (вставьте код выше)
+    // 🔹 ВЕТКА ДЛЯ MISTRAL AI
     else if (provider === 'mistral') {
       {
         const modelName = 'mistral-small-latest';
@@ -353,13 +353,13 @@ export async function POST(request: NextRequest) {
       if (errorMessage.includes('Лимит исчерпан')) {
         return NextResponse.json(
           { success: false, error: errorMessage },
-          { status: 402 }
+          { status: 402 },
         );
       }
     }
     return NextResponse.json(
       { success: false, error: errorMessage },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
