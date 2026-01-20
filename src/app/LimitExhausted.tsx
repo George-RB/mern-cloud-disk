@@ -55,7 +55,7 @@ export default function LimitExhausted({
   return (
     <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg border border-gray-100">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-100 to-amber-200 rounded-full mb-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-amber-100 to-amber-200 rounded-full mb-4">
           <svg
             className="w-8 h-8 text-amber-600"
             fill="none"
@@ -90,7 +90,7 @@ export default function LimitExhausted({
             <div className="text-2xl font-bold text-blue-600 my-2">$3</div>
             <div className="text-sm text-gray-500">≈ $0.15 за улучшение</div>
           </div>
-          <div className="border border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors border-blue-500 bg-blue-50">
+          <div className="border border-gray-200 rounded-lg p-4 text-center hover:border-blue-500 transition-colors  bg-blue-50">
             <div className="font-bold text-lg text-gray-800">50 улучшений</div>
             <div className="text-2xl font-bold text-blue-600 my-2">$5</div>
             <div className="text-sm text-gray-500">≈ $0.10 за улучшение</div>
@@ -104,7 +104,7 @@ export default function LimitExhausted({
             href="https://app.gumroad.com/checkout?product_id=your-product-id"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-md"
+            className="inline-flex items-center gap-2 bg-linear-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all shadow-md"
           >
             <svg
               className="w-5 h-5"
@@ -153,7 +153,7 @@ export default function LimitExhausted({
           <button
             type="submit"
             disabled={isLoading || !licenseKey.trim()}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+            className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
