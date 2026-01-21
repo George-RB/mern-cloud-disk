@@ -21,6 +21,7 @@ export default function RefineForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     setIsLoading(true);
     setError(null);
 
@@ -42,6 +43,7 @@ export default function RefineForm() {
 
       if (data.success) {
         setResult(data.data);
+        // await decrementLimit(guestId);
       } else {
         setError(data.error || 'Что-то пошло не так');
       }
